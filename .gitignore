@@ -1,0 +1,3 @@
+(docs/ARCHITECTURE.md, docs/DESIGN.md, docs/PRODUCT.md are documentation files, which are source/config files, so no need to add to .gitignore)
+
+(empty)
