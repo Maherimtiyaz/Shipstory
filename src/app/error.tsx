@@ -7,6 +7,11 @@ export default function Error({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  // Log error for debugging (never expose raw error to users)
+  if (process.env.NODE_ENV === "development") {
+    console.error("Application error:", error);
+  }
+
   return (
     <div className="flex min-h-screen flex-col items-center justify-center gap-6 px-4">
       <div className="text-center">
