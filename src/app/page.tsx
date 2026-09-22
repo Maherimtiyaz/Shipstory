@@ -1,13 +1,14 @@
-import { Navigation } from "@/components/layout/navigation";
-import { Footer } from "@/components/layout/footer";
-import { StoryCard } from "@/features/landing/components/story-card";
-import { exampleStory } from "@/features/landing/data/example-story";
-import { ArrowRight, GitBranch, FileSearch, Sparkles, Share2 } from "lucide-react";
+import Header from "@/components/layout/header"
+import Footer from "@/components/layout/footer"
+import { StoryCard } from "@/features/landing/components/story-card"
+import { exampleStory } from "@/features/landing/data/example-story"
+import { ArrowRight, GitBranch, FileSearch, Sparkles, Share2 } from "lucide-react"
+import Link from "next/link"
 
 export default function Home() {
   return (
     <div className="flex min-h-screen flex-col">
-      <Navigation />
+      <Header />
 
       <main className="flex-1">
         {/* Hero Section */}
@@ -21,13 +22,12 @@ export default function Home() {
               evidence-backed stories worth sharing.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row gap-4">
-              <button
-                disabled
-                className="inline-flex h-12 items-center justify-center rounded-md bg-accent px-6 text-sm font-medium text-accent-foreground hover:bg-accent/90 transition-colors opacity-50 cursor-not-allowed"
-                title="GitHub authentication coming soon"
+              <Link
+                href="/login"
+                className="inline-flex h-12 items-center justify-center rounded-md bg-accent px-6 text-sm font-medium text-accent-foreground hover:bg-accent/90 transition-colors"
               >
                 Connect GitHub
-              </button>
+              </Link>
               <a
                 href="#example"
                 className="inline-flex h-12 items-center justify-center rounded-md border border-border bg-transparent px-6 text-sm font-medium text-foreground hover:bg-surface transition-colors"
@@ -170,18 +170,17 @@ export default function Home() {
               Connect your GitHub account and discover the meaningful work hidden in your commit
               history.
             </p>
-            <button
-              disabled
-              className="inline-flex h-12 items-center justify-center rounded-md bg-accent px-8 text-sm font-medium text-accent-foreground hover:bg-accent/90 transition-colors opacity-50 cursor-not-allowed"
-              title="GitHub authentication coming soon"
+            <Link
+              href="/login"
+              className="inline-flex h-12 items-center justify-center rounded-md bg-accent px-8 text-sm font-medium text-accent-foreground hover:bg-accent/90 transition-colors"
             >
               Connect GitHub
-            </button>
+            </Link>
           </div>
         </section>
       </main>
 
       <Footer />
     </div>
-  );
+  )
 }

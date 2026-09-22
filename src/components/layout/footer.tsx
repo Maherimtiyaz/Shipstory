@@ -1,31 +1,26 @@
-export function Footer() {
+import Link from "next/link"
+
+export default function Footer() {
   return (
-    <footer className="border-t border-border py-8">
-      <div className="container mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-4 md:flex-row">
-        <p className="text-sm text-muted-foreground">
-          © {new Date().getFullYear()} ShipStory. All rights reserved.
-        </p>
-        <div className="flex items-center gap-6">
-          <a
-            href="#"
-            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-          >
-            Privacy
-          </a>
-          <a
-            href="#"
-            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-          >
-            Terms
-          </a>
-          <a
-            href="#"
-            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-          >
-            Contact
-          </a>
+    <footer className="border-t py-8">
+      <div className="container mx-auto px-4">
+        <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
+          <div className="text-sm text-muted-foreground">
+            © {new Date().getFullYear()} ShipStory. All rights reserved.
+          </div>
+          <nav className="flex gap-6">
+            <Link href="#" className="text-sm text-muted-foreground hover:text-foreground">
+              Terms
+            </Link>
+            <Link href="#" className="text-sm text-muted-foreground hover:text-foreground">
+              Privacy
+            </Link>
+            <Link href="#" className="text-sm text-muted-foreground hover:text-foreground">
+              Contact
+            </Link>
+          </nav>
         </div>
       </div>
     </footer>
-  );
+  )
 }

@@ -1,9 +1,12 @@
+import eslint from "@eslint/js";
+import tseslint from "typescript-eslint";
 import nextPlugin from "@next/eslint-plugin-next";
 import tseslint from "typescript-eslint";
 import tsParser from "@typescript-eslint/parser";
 
 /** @type {import("eslint").Linter.Config[]} */
-export default [
+export default tseslint.config(
+  eslint.configs.recommended,
   ...tseslint.configs.recommended,
   {
     files: ["**/*.{ts,tsx}"],
@@ -14,11 +17,15 @@ export default [
       "@next/next": nextPlugin,
     },
     rules: {
-      // Next.js recommended rules
       ...nextPlugin.configs.recommended.rules,
+    },
+    settings: {
+      next: {
+        rootDir: true,
+      },
     },
   },
   {
-    ignores: [".next/**", "node_modules/**", "*.js", "*.mjs"],
-  },
-];
+    ignores: [".next/", "node_modules/", "*.js", "*.cjs"],
+  }
+);

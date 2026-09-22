@@ -5,58 +5,45 @@
 # Dependencies
 node_modules/
 
+# Build outputs
+dist/
+build/
+.next/
+out/
+
 # Environment variables
 .env.local
-.env
+.env.*
 
-# TypeScript build output
+# TypeScript
 *.tsbuildinfo
-
-# Prisma
-prisma/migrations/
-prisma/seed.ts
 
 # Logs
 *.log
 
-# OS generated files
-.DS_Store
-Thumbs.db
-
-# Editor directories
+# Editor
 .vscode/
 .idea/
+*.swp
+*.swo
+*.tmp
+
+# OS
+.DS_Store
+Thumbs.db
 
 # Coverage
 coverage/
 htmlcov/
 .coverage
 
-# Cache directories
-.cache/
+# Python (if present)
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
-
-# Distribution / packaging
-.dist/
-.build/
-.deploy/
-
-# Temporary files
-*.tmp
-*.temp
-*.bak
-*.swp
-*.swo
-
-# Compressed archives
-*.zip
-*.tar.gz
-*.tar.bz2
-*.tar.xz
-*.gz
-*.rar
-*.7z
+.Python
+venv/
+.venv/
+.env
 ```
