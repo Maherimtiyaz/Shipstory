@@ -1,86 +1,62 @@
 ```
-# Next.js build outputs
+# Next.js build output
 .next/
-
-# Prisma
-prisma/migrations/
-prisma/seed.ts
-prisma/seed.js
-
-# Environment variables
-.env*
-!.env.example
 
 # Dependencies
 node_modules/
 
-# Build outputs
-dist/
-build/
-target/
+# Environment variables
+.env.local
+.env
+
+# TypeScript build output
+*.tsbuildinfo
+
+# Prisma
+prisma/migrations/
+prisma/seed.ts
 
 # Logs
 *.log
 
-# IDE files
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# OS files
+# OS generated files
 .DS_Store
 Thumbs.db
+
+# Editor directories
+.vscode/
+.idea/
 
 # Coverage
 coverage/
 htmlcov/
 .coverage
 
-# Python
+# Cache directories
+.cache/
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
-.pytest_cache/
-.mypy_cache/
 
-# TypeScript
-*.tsbuildinfo
+# Distribution / packaging
+.dist/
+.build/
+.deploy/
 
 # Temporary files
 *.tmp
 *.temp
+*.bak
+*.swp
+*.swo
 
-# Compressed files
+# Compressed archives
 *.zip
-*.gz
-*.tar
-*.tgz
-*.bz2
-*.xz
-*.7z
-*.rar
-*.zst
-*.lz4
-*.lzh
-*.cab
-*.arj
-*.rpm
-*.deb
-*.Z
-*.lz
-*.lzo
 *.tar.gz
 *.tar.bz2
 *.tar.xz
-*.tar.zst
-
-# Claude/Windsurf skills cache
-.claude/skills/
-.windsurf/skills/
-.agents/skills/
-
-# Lock files
-skills-lock.json
+*.gz
+*.rar
+*.7z
 ```
