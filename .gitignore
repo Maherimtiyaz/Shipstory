@@ -1,69 +1,62 @@
 ```
+# Next.js build output
+.next/
+
 # Dependencies
 node_modules/
 
-# Build outputs
-.next/
-dist/
-build/
-coverage/
-.nyc_output/
+# Environment variables
+.env.local
+.env
+
+# TypeScript build output
+*.tsbuildinfo
+
+# Prisma
+prisma/migrations/
+prisma/seed.ts
 
 # Logs
 *.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
 
-# Environment variables
-.env
-.env.local
-.env.*
-!.env.example
-
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# OS
+# OS generated files
 .DS_Store
 Thumbs.db
 
-# Python
+# Editor directories
+.vscode/
+.idea/
+
+# Coverage
+coverage/
+htmlcov/
+.coverage
+
+# Cache directories
+.cache/
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
-.Python
-env/
-venv/
-.venv/
-pip-log.txt
-pip-delete-this-directory.txt
-.tox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-*.log
-.git/modules/
-node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.bower-cache
-.bower-registry
-.bower-tmp
-node_modules/
-jspm_packages/
-typings/
-.flow-typed/
-.nyc_output/
-coverage/
-*.lcov
-.vscode-test
+
+# Distribution / packaging
+.dist/
+.build/
+.deploy/
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+
+# Compressed archives
+*.zip
+*.tar.gz
+*.tar.bz2
+*.tar.xz
+*.gz
+*.rar
+*.7z
 ```
