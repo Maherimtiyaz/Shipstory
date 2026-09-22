@@ -3,67 +3,44 @@
 node_modules/
 
 # Build outputs
-.next/
 dist/
 build/
-coverage/
-.nyc_output/
+.next/
+out/
+
+# Environment variables
+.env.local
+.env.*
+
+# TypeScript
+*.tsbuildinfo
 
 # Logs
 *.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
 
-# Environment variables
-.env
-.env.local
-.env.*
-!.env.example
-
-# IDE
+# Editor
 .vscode/
 .idea/
 *.swp
 *.swo
+*.tmp
 
 # OS
 .DS_Store
 Thumbs.db
 
-# Python
+# Coverage
+coverage/
+htmlcov/
+.coverage
+
+# Python (if present)
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
 .Python
-env/
 venv/
 .venv/
-pip-log.txt
-pip-delete-this-directory.txt
-.tox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-*.log
-.git/modules/
-node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.bower-cache
-.bower-registry
-.bower-tmp
-node_modules/
-jspm_packages/
-typings/
-.flow-typed/
-.nyc_output/
-coverage/
-*.lcov
-.vscode-test
+.env
 ```
