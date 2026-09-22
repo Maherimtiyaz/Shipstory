@@ -1,0 +1,358 @@
+// ShipStory Database Schema
+// Evidence-backed engineering storytelling platform
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// =============================================================================
+// AUTHENTICATION & AUTHORIZATION
+// =============================================================================
+
+model User {
+  id            String    @id @default(cuid())
+  email         String?   @unique
+  name          String?
+  image         String?
+  username      String?   @unique // Public profile username (@username)
+  emailVerified DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  accounts Account[]
+  sessions Session[]
+  repositories Repository[]
+  stories Story[]
+  generatedContents GeneratedContent[]
+  visuals Visual[]
+
+  @@index([username])
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// =============================================================================
+// GITHUB REPOSITORIES & INGESTION
+// =============================================================================
+
+model Repository {
+  id          String   @id @default(cuid())
+  githubId    Int      @unique(map: "repo_github_id_unique") // GitHub repository ID
+  name        String   // e.g., "shipstory"
+  fullName    String   // e.g., "acme/shipstory"
+  description String?
+  htmlUrl     String
+  isPrivate   Boolean
+  isFork      Boolean
+  defaultBranch String @default("main")
+  ownerId     String   // GitHub user/org ID
+  ownerLogin  String   // GitHub user/org login
+  userId      String   // ShipStory user who owns this connection
+  
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  commits     Commit[]
+  pullRequests PullRequest[]
+  analysis    EngineeringAnalysis?
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([userId])
+  @@index([fullName])
+}
+
+model Commit {
+  id            String   @id @default(cuid())
+  sha           String   // Full commit SHA
+  shortSha      String   // First 7 characters for display
+  message       String   // Commit message
+  authorName    String?
+  authorEmail   String?
+  authorGithubId String?
+  committedAt   DateTime
+  githubUrl     String?
+  
+  repositoryId  String
+  repository    Repository @relation(fields: [repositoryId], references: [id], onDelete: Cascade)
+  
+  changedFiles  ChangedFile[]
+  storyCommits  StoryCommit[]
+  engineeringSignals EngineeringSignal[]
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@unique([repositoryId, sha])
+  @@index([repositoryId])
+  @@index([committedAt])
+}
+
+model ChangedFile {
+  id            String   @id @default(cuid())
+  filename      String   // e.g., "src/cache/redis.ts"
+  status        String   // added, modified, removed, renamed
+  additions     Int      @default(0)
+  deletions     Int      @default(0)
+  patch         String?  @db.Text // Diff patch (optional, can be large)
+  previousFilename String? // For renamed files
+  
+  commitId      String
+  commit        Commit   @relation(fields: [commitId], references: [id], onDelete: Cascade)
+  
+  createdAt     DateTime @default(now())
+
+  @@unique([commitId, filename])
+  @@index([commitId])
+}
+
+model PullRequest {
+  id            String   @id @default(cuid())
+  githubId      Int      @unique // GitHub PR number within repo
+  title         String
+  body          String?  @db.Text
+  state         String   // open, closed, merged
+  authorName    String?
+  authorGithubId String?
+  mergedAt      DateTime?
+  closedAt      DateTime?
+  createdAt     DateTime
+  updatedAt_github DateTime // GitHub's updated_at
+  
+  repositoryId  String
+  repository    Repository @relation(fields: [repositoryId], references: [id], onDelete: Cascade)
+  
+  @@unique([repositoryId, githubId])
+  @@index([repositoryId])
+}
+
+// =============================================================================
+// ENGINEERING SIGNALS (DETERMINISTIC ANALYSIS)
+// =============================================================================
+
+model EngineeringSignal {
+  id            String   @id @default(cuid())
+  type          String   // e.g., "DEPENDENCY_ADDED", "API_ROUTE_CHANGED", "CACHE_ADDED"
+  category      String   // e.g., "dependencies", "api", "caching", "testing"
+  severity      String   @default("medium") // low, medium, high
+  description   String
+  metadata      Json?    // Additional structured data
+  
+  commitId      String
+  commit        Commit   @relation(fields: [commitId], references: [id], onDelete: Cascade)
+  
+  createdAt     DateTime @default(now())
+
+  @@index([commitId])
+  @@index([type])
+  @@index([category])
+}
+
+// =============================================================================
+// EVIDENCE GRAPH
+// =============================================================================
+
+model Evidence {
+  id            String   @id @default(cuid())
+  type          String   // "COMMIT", "CHANGED_FILE", "ENGINEERING_SIGNAL", "PULL_REQUEST"
+  referenceId   String   // ID of the referenced entity
+  description   String   // Human-readable description
+  metadata      Json?    // Additional context
+  
+  createdAt     DateTime @default(now())
+
+  @@index([type])
+  @@index([referenceId])
+}
+
+model EngineeringAnalysis {
+  id            String   @id @default(cuid())
+  repositoryId  String   @unique
+  status        String   @default("pending") // pending, processing, completed, failed
+  analyzedAt    DateTime?
+  errorMessage  String?
+  metadata      Json?    // Analysis statistics, duration, etc.
+  
+  repository    Repository @relation(fields: [repositoryId], references: [id], onDelete: Cascade)
+  stories       Story[]
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([repositoryId])
+  @@index([status])
+}
+
+// =============================================================================
+// STORIES & CLAIMS
+// =============================================================================
+
+model Story {
+  id            String   @id @default(cuid())
+  title         String
+  summary       String   @db.Text
+  problem       String?  @db.Text
+  change        String   @db.Text
+  whyItMatters  String?  @db.Text
+  
+  // Scoring dimensions (transparent, not fake precision)
+  evidenceStrength   Int? // 1-5 scale
+  technicalDepth     Int? // 1-5 scale
+  changeScope        Int? // 1-5 scale
+  novelty            Int? // 1-5 scale
+  communicationPotential Int? // 1-5 scale
+  visualPotential    Int? // 1-5 scale
+  
+  analysisId    String
+  analysis      EngineeringAnalysis @relation(fields: [analysisId], references: [id], onDelete: Cascade)
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  storyCommits  StoryCommit[]
+  claims        Claim[]
+  generatedContents GeneratedContent[]
+  visuals       Visual[]
+  
+  isPublic      Boolean  @default(false)
+  publishedAt   DateTime?
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([userId])
+  @@index([analysisId])
+  @@index([isPublic])
+}
+
+model StoryCommit {
+  id            String   @id @default(cuid())
+  storyId       String
+  commitId      String
+  reasoning     String?  @db.Text // Why this commit was grouped into the story
+  
+  story         Story    @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  commit        Commit   @relation(fields: [commitId], references: [id], onDelete: Cascade)
+
+  @@unique([storyId, commitId])
+  @@index([storyId])
+  @@index([commitId])
+}
+
+model Claim {
+  id            String   @id @default(cuid())
+  text          String   @db.Text
+  storyId       String
+  story         Story    @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  
+  evidences     ClaimEvidence[]
+  
+  createdAt     DateTime @default(now())
+
+  @@index([storyId])
+}
+
+model ClaimEvidence {
+  id            String   @id @default(cuid())
+  claimId       String
+  evidenceType  String   // "COMMIT", "CHANGED_FILE", "ENGINEERING_SIGNAL", "EVIDENCE"
+  evidenceId    String   // ID of the specific evidence entity
+  
+  claim         Claim    @relation(fields: [claimId], references: [id], onDelete: Cascade)
+
+  @@unique([claimId, evidenceType, evidenceId])
+  @@index([claimId])
+  @@index([evidenceType, evidenceId])
+}
+
+// =============================================================================
+// GENERATED CONTENT
+// =============================================================================
+
+model GeneratedContent {
+  id            String   @id @default(cuid())
+  mode          String   // "technical", "story", "career"
+  contentType   String   // "x_post", "portfolio_description", "resume_bullet", "technical_explanation"
+  content       String   @db.Text
+  storyId       String
+  story         Story    @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([storyId])
+  @@index([userId])
+  @@index([mode, contentType])
+}
+
+model Visual {
+  id            String   @id @default(cuid())
+  template      String   // "before_after", "architecture", "timeline"
+  svgContent    String   @db.Text // Generated SVG/HTML
+  metadata      Json?    // Template-specific data
+  storyId       String
+  story         Story    @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([storyId])
+  @@index([userId])
+}
+
+model GenerationJob {
+  id            String   @id @default(cuid())
+  type          String   // "content", "visual", "analysis"
+  status        String   @default("pending") // pending, processing, completed, failed
+  entityType    String   // "story", "repository"
+  entityId      String
+  errorMessage  String?
+  metadata      Json?
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([entityType, entityId])
+  @@index([status])
+}
