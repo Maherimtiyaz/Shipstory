@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 
 interface BadgeProps {
-  variant?: "default" | "success" | "warning" | "muted";
+  variant?: "default" | "secondary" | "outline" | "success" | "warning" | "muted" | "destructive";
   children: React.ReactNode;
   className?: string;
 }
@@ -9,9 +9,12 @@ interface BadgeProps {
 export function Badge({ variant = "default", children, className }: BadgeProps) {
   const variants = {
     default: "bg-accent/10 text-accent-foreground border-accent/20",
+    secondary: "bg-secondary/10 text-secondary-foreground border-secondary/20",
+    outline: "bg-transparent border-border text-foreground",
     success: "bg-success/10 text-green-400 border-success/20",
     warning: "bg-warning/10 text-yellow-400 border-warning/20",
     muted: "bg-muted text-muted-foreground border-border",
+    destructive: "bg-destructive/10 text-red-400 border-destructive/20",
   };
 
   return (

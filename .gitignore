@@ -1,49 +1,46 @@
 ```
-# Next.js build output
+# Next.js build outputs
 .next/
+out/
 
 # Dependencies
 node_modules/
-
-# Build outputs
-dist/
-build/
-.next/
-out/
 
 # Environment variables
 .env.local
 .env.*
 
-# TypeScript
-*.tsbuildinfo
-
-# Logs
-*.log
-
-# Editor
+# IDE files
 .vscode/
 .idea/
 *.swp
 *.swo
+
+# Logs
+*.log
+
+# Temporary files
 *.tmp
 
-# OS
-.DS_Store
-Thumbs.db
+# Build artifacts
+dist/
+build/
+target/
 
-# Coverage
-coverage/
-htmlcov/
-.coverage
-
-# Python (if present)
+# Python cache (if any Python files present)
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
-.Python
-venv/
-.venv/
-.env
+
+# Coverage reports
+coverage/
+htmlcov/
+.coverage
+
+# Database
+prisma/migrations/
+
+# TypeScript
+*.tsbuildinfo
 ```

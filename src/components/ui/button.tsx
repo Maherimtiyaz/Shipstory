@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "default" | "outline" | "ghost";
+  variant?: "default" | "outline" | "ghost" | "secondary";
   size?: "sm" | "md" | "lg";
 }
 
@@ -18,6 +18,7 @@ export function Button({
     default: "bg-accent text-accent-foreground hover:bg-accent/90",
     outline: "border border-border bg-transparent hover:bg-surface",
     ghost: "hover:bg-surface",
+    secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/90",
   };
 
   const sizes = {
